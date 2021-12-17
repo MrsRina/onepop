@@ -1,6 +1,6 @@
 # onepop
 Onepop is an utlity combat client paid but now public and open source, there is no license so you are free to fork but not sell.
-The client license is glp3 (GNU General Public License v3.0).
+The client license is gpl3 (GNU General Public License v3.0).
 
 * The client uses ![Imperador](https://github.com/SirRina/Imperador-Widgets) entry box.
 * Good crystal aura for strict and non strict servers.
