@@ -1,15 +1,14 @@
-[
-{
+[{
   "modid": "onepop",
-  "name": "onepop 2",
-  "description": "Rina living in Canada!! We hope!!",
+  "name": "Onepop",
+  "description": "Onepop is an utility combat client paid made by Rina, but now open source & free.",
   "version": "2.5",
-  "mcversion": "1.12.2-14.23.5.2854",
+  "mcversion": "1.12.2",
   "url": "https://github.com/SirRina/onepop",
-  "updateUrl": "https://github.com/SirRina/onepop",
+  "updateUrl": "",
   "authorList": ["rina", "doctor-swag", "hero"],
   "logoFile": "",
+  "credits": "rina",
   "screenshots": [],
   "dependencies": []
-}
-]
+}]
