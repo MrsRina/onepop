@@ -10,8 +10,7 @@ Onepop is an utlity combat client paid but now public and open source, there is 
 - Protection sys & obfuscatoin - Doctor-Swag
 - Leader of discord & contributor (origin client creator) - Hero
 
-- Additional text:
-Thank you for who bought the Onepop client, I really can not forget how much it helped me!
+* Thank you for who bought the Onepop client, I really can not forget how much it helped me!
 I had several problems with Onepop (leak source old version, leak begin base version by a "dev", fake leaks/fake dumps), but I do not care.
 Onepop was such a really good experience to me, not gonna lie... I am considering make a homage for users but I do not know what.
 ~ Rina
