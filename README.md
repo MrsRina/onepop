@@ -26,7 +26,7 @@ gradle setupDecompWorkspace
 - Protection sys & obfuscatoin - Doctor-Swag
 - Leader of discord server & contributor (origin client creator) - Hero
 
-| Thank you for who bought the Onepop client, I really can not forget how much it helped me!
-| I had several problems with Onepop (leak source old version, leak begin base version by a "dev", fake leaks/fake dumps), but I do not care.
-| Onepop was such a really good experience to me, not gonna lie... I am considering make a tribute for users but I do not know what.
-| ~ Rina
+ Thank you for who bought the Onepop client, I really can not forget how much it helped me!
+ I had several problems with Onepop (leak source old version, leak begin base version by a "dev", fake leaks/fake dumps), but I do not care.
+ Onepop was such a really good experience to me, not gonna lie... I am considering make a tribute for users but I do not know what.
+ ~ Rina
