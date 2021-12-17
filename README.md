@@ -1,6 +1,5 @@
 # onepop
-Onepop is an utlity combat client paid but now public and open source, there is no license so you are free to fork but not sell.
-The client license is gpl3 (GNU General Public License v3.0).
+Onepop is an utlity client previously paid, but now public and open source, the client license is the GNU General Public License v3.0.
 
 * The client uses ![Imperador](https://github.com/SirRina/Imperador-Widgets) entry box.
 * Good crystal aura for strict and non strict servers.
@@ -11,10 +10,18 @@ Additional info.
 = There is no default bind for click gui, you need type in chat '.t clickgui'.
 
 # building
-- For you build Onepop client first you need download the repo, extract and execute build task using gradle commands.
+- For you to build Onepop client, you need to download the repo, extract and execute build task using gradle commands.
 
 ```
-gradle setupDecompWorkspace --stop && gradlew clean build
+# clone the repo
+git clone https://github.com/SirRina/onepop.git
+
+# decompile & deobfuscate minecraft
+gradle setupDecompWorkspace
+
+# build the client
+gradle setupDecompWorkspace --stop && gradlew clean build # option 1
+gradle build # optiopn 2
 ```
 
 # credit
