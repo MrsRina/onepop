@@ -11,7 +11,7 @@ The client license is gpl3 (GNU General Public License v3.0).
 - For you build Onepop client first you need download the repo, extract and execute build task using gradle commands.
 
 ```
-gradle setupDecompWorkspace
+gradle setupDecompWorkspace --stop && gradlew clean build
 ```
 
 # credit
