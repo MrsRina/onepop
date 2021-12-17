@@ -15,9 +15,10 @@ gradle setupDecompWorkspace
 ```
 
 # credit
-- Client base, modules & ui/gui - Rina
-- Protection sys & obfuscation - Doctor-Swag
-- Leader of discord server & contributor (origin client creator) - Hero
+- Client base, modules & ui/gui - ![Rina](https://github.com/SirRina)
+- Protection sys & obfuscation - ![Doctor-Swag](https://github.com/doctor-swag)
+- Leader of discord server & contributor (origin client creator) - ![Hero](https://github.com/HeroGlaucoP)
+- Main contributor - ![JohnShiozo](https://github.com/JohnShiozo)
 
  Thank you for who bought the Onepop client, I really can not forget how much it helped me!
  I had several problems with Onepop (leak source old version, leak begin base version by a "dev", fake leaks/fake dumps), but I do not care.
