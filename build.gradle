@@ -18,14 +18,12 @@ buildscript {
 		classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
 		classpath 'org.spongepowered:mixingradle:0.6-SNAPSHOT'
 		classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.3'
-		classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.2.71"
     }
 }
 
 apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'org.spongepowered.mixin'
 apply plugin: 'com.github.johnrengelman.shadow'
-apply plugin: 'kotlin'
 
 group = 'rina.onepop.club'
 version = '2'
@@ -126,8 +124,3 @@ tasks.withType(JavaCompile) {
 }
 
 build.dependsOn(shadowJar)
-compileKotlin {
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
-}
