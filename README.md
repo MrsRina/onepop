@@ -6,16 +6,22 @@ Onepop is an utlity client previously paid, but now public and open source, the 
 * Good strafe with an insane boost in servers strict and non strict.
 * Visuals with many options to you configure.
 
+Additional info.
+= There is no default bind for click gui, you need type in chat '.t clickgui'.
+
 # building
 - For you to build Onepop client, you need to download the repo, extract and execute build task using gradle commands.
 
 ```
 # clone the repo
 git clone https://github.com/SirRina/onepop.git
+
 # decompile & deobfuscate minecraft
 gradle setupDecompWorkspace
+
 # build the client
-gradle build
+gradle setupDecompWorkspace --stop && gradlew clean build # option 1
+gradle build # optiopn 2
 ```
 
 # credit
