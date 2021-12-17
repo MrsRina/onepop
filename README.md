@@ -5,13 +5,6 @@ Onepop is an utlity combat client paid but now public and open source, there is 
 * Good strafe with a insane boost in servers strict and non strict.
 * Visuals with many options to you configure.
 
-![Alt text](/splash/splash_1.png?raw=true)
-![Alt text](/splash/splash_2.png?raw=true)
-![Alt text](/splash/splash_3.png?raw=true)
-![Alt text](/splash/splash_4.png?raw=true)
-![Alt text](/splash/splash_5.png?raw=true)
-![Alt text](/splash/splash_6.png?raw=true)
-
 # building
 - For you build Onepop client first you need download the repo, extract and executea build task using gradle commands.
 
@@ -28,3 +21,10 @@ gradle setupDecompWorkspace
  I had several problems with Onepop (leak source old version, leak begin base version by a "dev", fake leaks/fake dumps), but I do not care.
  Onepop was such a really good experience to me, not gonna lie... I am considering make a tribute for users but I do not know what.
  ~ Rina
+
+![Alt text](/splash/splash_1.png?raw=true)
+![Alt text](/splash/splash_2.png?raw=true)
+![Alt text](/splash/splash_3.png?raw=true)
+![Alt text](/splash/splash_4.png?raw=true)
+![Alt text](/splash/splash_5.png?raw=true)
+![Alt text](/splash/splash_6.png?raw=true)
