@@ -7,6 +7,9 @@ The client license is gpl3 (GNU General Public License v3.0).
 * Good strafe with an insane boost in servers strict and non strict.
 * Visuals with many options to you configure.
 
+Additional info.
+= There is no default bind for click gui, you need type in chat '.t clickgui'.
+
 # building
 - For you build Onepop client first you need download the repo, extract and execute build task using gradle commands.
 
