@@ -1,11 +1,9 @@
 # onepop
 Onepop is an utlity combat client paid but now public and open source, there is no license you are free to fork but not sell.
-+
 * The client uses ![Imperador](https://github.com/SirRina/Imperador-Widgets) entry box.
 * Good crystal aura for strict and non strict servers.
 * Good strafe with a insane boost in servers strict and non strict.
 * Visuals with many options to you configure.
-* 
 
 ![Alt text](/splash/splash_1.png?raw=true)
 ![Alt text](/splash/splash_2.png?raw=true)
