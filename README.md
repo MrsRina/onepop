@@ -1,12 +1,12 @@
 # onepop
 Onepop is an utlity combat client paid but now public and open source, there is no license you are free to fork but not sell.
 
-![splash1](https://github.com/SirRina/onepop/splash/splash_1.png)
-![splash2](https://github.com/SirRina/onepop/splash/splash_2.png)
-![splash3](https://github.com/SirRina/onepop/splash/splash_3.png)
-![splash4](https://github.com/SirRina/onepop/splash/splash_4.png)
-![splash5](https://github.com/SirRina/onepop/splash/splash_5.png)
-![splash6](https://github.com/SirRina/onepop/splash/splash_6.png)
+![splash1](https://github.com/SirRina/onepop/tree/main/splash/splash_1.png)
+![splash2](https://github.com/SirRina/onepop/tree/main/splash/splash_2.png)
+![splash3](https://github.com/SirRina/onepop/tree/main/splash/splash_3.png)
+![splash4](https://github.com/SirRina/onepop/tree/main/splash/splash_4.png)
+![splash5](https://github.com/SirRina/onepop/tree/main/splash/splash_5.png)
+![splash6](https://github.com/SirRina/onepop/tree/main/splash/splash_6.png)
 
 # building
 - For you build Onepop client first you need download the repo, extract and executea build task using gradle commands.
