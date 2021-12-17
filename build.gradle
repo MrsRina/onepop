@@ -28,7 +28,7 @@ apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'kotlin'
 
 group = 'rina.onepop.club'
-version = '2.0-beta'
+version = '2'
 
 compileJava {
 	sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
