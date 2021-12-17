@@ -5,9 +5,9 @@
   "description": "Rina living in Canada!! We hope!!",
   "version": "2.5",
   "mcversion": "1.12.2-14.23.5.2854",
-  "url": "",
-  "updateUrl": "",
-  "authorList": ["Rina", "Hero"],
+  "url": "https://github.com/SirRina/onepop",
+  "updateUrl": "https://github.com/SirRina/onepop",
+  "authorList": ["rina", "doctor-swag", "hero"],
   "logoFile": "",
   "screenshots": [],
   "dependencies": []
