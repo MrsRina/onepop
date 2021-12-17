@@ -19,9 +19,11 @@ git clone https://github.com/SirRina/onepop.git
 # decompile & deobfuscate minecraft
 gradle setupDecompWorkspace
 
+# build the client direct
+gradle setupDecompWorkspace --stop && gradlew clean build
+
 # build the client
-gradle setupDecompWorkspace --stop && gradlew clean build # option 1
-gradle build # optiopn 2
+gradle build
 ```
 
 # credit
