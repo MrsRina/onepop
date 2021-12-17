@@ -1,0 +1,31 @@
+{
+  "required": true,
+  "compatibilityLevel": "JAVA_8",
+  "package": "rina.onepop.club.mixin.mixins",
+  "refmap": "mixins.onepop.refmap.json",
+  "mixins": [
+    "MixinMinecraft",
+    "MixinWorld",
+    "entity.MixinAbstractHorse",
+    "entity.MixinEntity",
+    "entity.MixinEntityLivingBase",
+    "entity.MixinEntityPig",
+    "entity.MixinEntityPlayerSP",
+    "entity.MixinEntityRenderer",
+    "gui.MixinBossOverlay",
+    "gui.MixinGuiInGame",
+    "network.MixinNetHandlerPlayClient",
+    "network.MixinNetHandlerPlayServer",
+    "network.MixinNetworkManager",
+    "network.MixinServerPinger",
+    "player.MixinEntityPlayer",
+    "player.MixinPlayerControllerMP",
+    "render.MixinItemRenderer",
+    "render.MixinRenderEnderCrystal",
+    "render.MixinRenderItem",
+    "render.MixinRenderLivingBase"
+  ],
+  "client": [
+    "MixinLayerBipedArmor"
+  ]
+}

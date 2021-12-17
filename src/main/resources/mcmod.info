@@ -1,0 +1,15 @@
+[
+{
+  "modid": "onepop",
+  "name": "onepop 2",
+  "description": "Rina living in Canada!! We hope!!",
+  "version": "2.5",
+  "mcversion": "1.12.2-14.23.5.2854",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["Rina", "Hero"],
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
