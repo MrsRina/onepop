@@ -1,8 +1,8 @@
 # onepop
 Onepop is an utlity combat client paid but now public and open source, there is no license you are free to fork but not sell.
 
-![alt text](https://github.com/SirRina/onepop/splash_1.png?raw=true)
-![alt text](https://github.com/SirRina/onepop/splash_2.png?raw=true)
+![plot](https://github.com/SirRina/onepop/splash_1.png?raw=true)
+![plot](https://github.com/SirRina/onepop/splash_2.png?raw=true)
 ![alt text](https://github.com/SirRina/onepop/splash_3.png?raw=true)
 ![alt text](https://github.com/SirRina/onepop/splash_4.png?raw=true)
 ![alt text](https://github.com/SirRina/onepop/splash_5.png?raw=true)
