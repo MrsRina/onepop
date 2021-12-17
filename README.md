@@ -3,7 +3,7 @@ Onepop is an utlity combat client paid but now public and open source, there is 
 
 # building
 For you build Onepop client first you need download the repo, extract and execute a build task using gradle commands:
-gradle setupDecompWorkspace
+```gradle setupDecompWorkspace```
 
 # credit
 - Client base, modules & ui/gui - Rina
