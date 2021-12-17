@@ -2,8 +2,7 @@
 Onepop is an utlity combat client paid but now public and open source, there is no license you are free to fork but not sell.
 
 # building
-For you build Onepop client first you need download the repo, extract and executea build task using gradle commands.
-After this execute the command:
+- For you build Onepop client first you need download the repo, extract and executea build task using gradle commands.
 ```gradle setupDecompWorkspace```
 
 # credit
