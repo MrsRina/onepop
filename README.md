@@ -6,7 +6,6 @@ For you build Onepop client first you need download the repo, extract and execut
 gradle setupDecompWorkspace
 
 # credit
-- Main programmer:
 - Client base, modules & ui/gui - Rina
 - Protection sys & obfuscatoin - Doctor-Swag
 - Leader of discord & contributor (origin client creator) - Hero
