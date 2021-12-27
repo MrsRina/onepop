@@ -85,15 +85,6 @@ public class ModuleStrafeRewrite extends Module {
 		settingStrafe.setEnabled(settingMode.getValue() != Mode.LEGIT);
 		settingStrafeI.setEnabled(settingMode.getValue() != Mode.LEGIT);
 		settingStrafeII.setEnabled(settingMode.getValue() != Mode.LEGIT);
-
-		if (this.lastTickInfo > 1000) {
-			this.print("AUTO-JUMP Minecraft option is enabled, please disable.");
-			this.tickInfo = 0;
-		}
-
-		if (mc.gameSettings.autoJump) {
-			this.lastTickInfo++;
-		}
 	}
 
 	@Override
