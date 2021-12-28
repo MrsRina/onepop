@@ -30,9 +30,15 @@ public class WindowClickTracker extends Tracker {
 
     @Override
     public void onPre() {
-        short short1 = player.openContainer.getNextTransactionID(player.inventory);
-        ItemStack itemstack = player.openContainer.slotClick(slotId, mouseButton, type, player);
+        boolean flush = true;
 
-        this.setPacket(new CPacketClickWindow(windowId, slotId, mouseButton, type, itemstack, short1));
+        try {
+            short short1 = player.openContainer.getNextTransactionID(player.inventory);
+            ItemStack itemstack = player.openContainer.slotClick(slotId, mouseButton, type, player);
+
+            this.setPacket(new CPacketClickWindow(windowId, slotId, mouseButton, type, itemstack, short1));
+        } catch (Exception exc) {
+            flush = false;
+        }
     }
 }
