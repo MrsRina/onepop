@@ -55,6 +55,7 @@ import rina.onepop.club.client.module.misc.*;
 import rina.onepop.club.client.module.misc.armoralert.ModuleArmorAlert;
 import rina.onepop.club.client.module.misc.autoeat.ModuleAutoEat;
 import rina.onepop.club.client.module.misc.autofish.ModuleAutoFish;
+import rina.onepop.club.client.module.misc.bettermine.ModuleBetterMine;
 import rina.onepop.club.client.module.misc.middleclick.ModuleMiddleClick;
 import rina.onepop.club.client.module.player.*;
 import rina.onepop.club.client.module.player.autowalk.ModuleAutoWalk;
@@ -78,7 +79,7 @@ import java.util.Comparator;
  * @since 15/11/20 at 4:51pm
  */
 public class Onepop {
-    public static final String NAME         = "onepop";
+    public static final String NAME        = "onepop";
     public static final String VERSION     = "2";
     public static final String PATH_CONFIG = "onepop/";
     public static final String PATH_PRESET = PATH_CONFIG + "preset/";

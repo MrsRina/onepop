@@ -26,7 +26,8 @@ import rina.onepop.club.api.util.math.PositionUtil;
 import rina.onepop.club.api.util.render.RenderUtil;
 import rina.onepop.club.api.util.world.BlockUtil;
 import rina.onepop.club.client.event.client.ClientTickEvent;
-import rina.onepop.club.client.module.misc.ModuleBetterMine;
+import rina.onepop.club.client.event.entity.PlayerDamageBlockEvent;
+import rina.onepop.club.client.module.misc.bettermine.ModuleBetterMine;
 import team.stiff.pomelo.impl.annotated.handler.annotation.Listener;
 
 import java.awt.*;
@@ -147,12 +148,13 @@ public class ModuleAutoCityMine extends Module {
                 } else {
                     if (ModuleBetterMine.INSTANCE.isEnabled()) {
                         if (!this.isDamaging) {
-                            ModuleBetterMine.INSTANCE.queue(this.position, EnumFacing.getDirectionFromEntityLiving(this.position, mc.player));
+                            PlayerDamageBlockEvent eventToSend = new PlayerDamageBlockEvent(this.position, EnumFacing.getDirectionFromEntityLiving(this.position, mc.player));
+                            ModuleBetterMine.INSTANCE.getCollector().add(eventToSend);
 
                             this.isDamaging = true;
                         }
 
-                        if (!ModuleBetterMine.INSTANCE.containsBlockDamage(this.position) && this.isDamaging) {
+                        if (!ModuleBetterMine.INSTANCE.getCollector().contains(this.position) && this.isDamaging) {
                             if (BlockUtil.isAir(this.position)) {
                                 this.updatePlace();
                             }
