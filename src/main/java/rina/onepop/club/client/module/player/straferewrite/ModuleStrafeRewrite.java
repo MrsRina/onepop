@@ -104,6 +104,25 @@ public class ModuleStrafeRewrite extends Module {
 				this.additionZ = packet.getMotionZ();
 
 				this.setRequiredAddition();
+
+				if (settingBoost.getValue() == Boost.CONTROL) {
+					double factorX = this.additionX / 8000.0D;
+					double factorZ = this.additionZ / 8000.0D;
+
+					float f = mc.player.rotationYaw * 0.017453292F;
+					double x = Math.sqrt(factorX * factorX + factorZ * factorZ);
+
+					if (mc.player.isPotionActive(MobEffects.SPEED)) {
+						int i = mc.player.getActivePotionEffect(MobEffects.SPEED).getAmplifier();
+
+						x = x * (1.0 + 0.1 * (i + 1));
+					}
+
+					mc.player.motionX -= MathHelper.sin(f) * x;
+					mc.player.motionZ += MathHelper.cos(f) * x;
+
+					this.unsetRequiredAddition();
+				}
 			}
 		}
 	}
@@ -261,7 +280,6 @@ public class ModuleStrafeRewrite extends Module {
 		this.speed = sqrt > theSpeed ? (flag ? sqrt + (settingSpeedLimiter.getValue().doubleValue() / 1000) : sqrt) : theSpeed;
 
 		this.applyAirControl(event);
-		this.unsetRequiredAddition();
 	}
 
 	public void applyAirControl(PlayerMoveEvent event) {
@@ -305,6 +323,7 @@ public class ModuleStrafeRewrite extends Module {
 			double mz = this.additionZ / 8000.0D;
 
 			this.speed += Math.sqrt(mx * mx + mz * mz);
+			this.unsetRequiredAddition();
 		}
 
 		switch ((CalculateMode) settingCalculateMode.getValue()) {

@@ -165,8 +165,7 @@ public class ModuleAutoCrystalRewrite extends Module {
         }
     }
 
-    @Override
-    public void onRender3D() {
+    public void onDirectDraw3D() {
         if (this.position != null && settingColorPlace.getValue() && !ModuleAutoCrystalRender.INSTANCE.isEnabled()) {
             RenderUtil.drawSolidBlock(camera, this.position, settingColorPlace.getColor());
             RenderUtil.drawOutlineBlock(camera, this.position, settingLineSize.getValue().floatValue(), settingColorPlace.getColor(settingLineAlpha.getValue().intValue()));
@@ -238,9 +237,8 @@ public class ModuleAutoCrystalRewrite extends Module {
             }
         }
     }
-    
-    @Listener(priority = ListenerPriority.HIGHEST)
-    public void onTickEvent(RunTickEvent event) {
+
+    public void onDirectTick() {
         if (NullUtil.isPlayerWorld()) {
             return;
         }

@@ -85,6 +85,8 @@ public class Onepop {
     public static final String PATH_PRESET = PATH_CONFIG + "preset/";
     public static final String CHAT        = ChatFormatting.GRAY + NAME + " " + ChatFormatting.WHITE;
 
+    public static final ModuleAutoCrystalRewrite MODULE_AUTO_CRYSTAL_REWRITE = new ModuleAutoCrystalRewrite();
+
     /*
      * We create one final Minecraft, there is the function Minecraft or this variable;
      */
@@ -148,12 +150,12 @@ public class Onepop {
         this.moduleManager.registry(new ModuleGeneral());
 
         // Category Combat.
+        this.moduleManager.registry(MODULE_AUTO_CRYSTAL_REWRITE);
         this.moduleManager.registry(new ModuleAutoTrap());
         this.moduleManager.registry(new ModuleBowBomb());
         this.moduleManager.registry(new ModuleAutoCityMine());
         this.moduleManager.registry(new ModuleObsidianPlace());
         this.moduleManager.registry(new ModuleBurrow());
-        this.moduleManager.registry(new ModuleAutoCrystalRewrite());
         this.moduleManager.registry(new ModuleOffhand());
         this.moduleManager.registry(new ModuleFastBow());
         this.moduleManager.registry(new ModuleAutoMinecartBomb());

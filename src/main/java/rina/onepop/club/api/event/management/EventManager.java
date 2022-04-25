@@ -27,6 +27,8 @@ import rina.onepop.club.client.module.client.ModuleHUD;
 
 import java.awt.*;
 
+import static rina.onepop.club.Onepop.MODULE_AUTO_CRYSTAL_REWRITE;
+
 /**
  * @author SrRina
  * @since 15/11/20 at 7:45pm
@@ -75,6 +77,10 @@ public class EventManager {
     public void onTick(TickEvent.ClientTickEvent event) {
         if (NullUtil.isPlayer()) {
             return;
+        }
+
+        if (MODULE_AUTO_CRYSTAL_REWRITE.isEnabled()) {
+            MODULE_AUTO_CRYSTAL_REWRITE.onDirectTick();
         }
 
         Onepop.getPomeloEventManager().dispatchEvent(new ClientTickEvent());
@@ -167,6 +173,13 @@ public class EventManager {
             return;
         }
 
+        this.setCurrentRender3DPartialTicks(event.getPartialTicks());
+
+        if (MODULE_AUTO_CRYSTAL_REWRITE.isEnabled()) {
+            MODULE_AUTO_CRYSTAL_REWRITE.onDirectDraw3D();
+        }
+
+
         float[] currentSystemCycle = {
                 (System.currentTimeMillis() % (360 * 32)) / (360f * 32f)
         };
@@ -178,8 +191,6 @@ public class EventManager {
                 ((currentColorCycle >> 8) & 0xFF),
                 (currentColorCycle & 0xFF)
         };
-
-        this.setCurrentRender3DPartialTicks(event.getPartialTicks());
 
         /*
          * Basically the ticks are more smooth in event RenderWorldLastEvent;
