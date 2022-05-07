@@ -165,6 +165,9 @@ public class EventManager {
                 components.cornerDetector();
             }
         }
+
+        // We apply the dock push function here to best smooth!
+        Onepop.getComponentManager().onCornerDetectorComponentList(this.currentRender2DPartialTicks);
     }
 
     @SubscribeEvent
@@ -174,11 +177,6 @@ public class EventManager {
         }
 
         this.setCurrentRender3DPartialTicks(event.getPartialTicks());
-
-        if (MODULE_AUTO_CRYSTAL_REWRITE.isEnabled()) {
-            MODULE_AUTO_CRYSTAL_REWRITE.onDirectDraw3D();
-        }
-
 
         float[] currentSystemCycle = {
                 (System.currentTimeMillis() % (360 * 32)) / (360f * 32f)
@@ -199,14 +197,15 @@ public class EventManager {
          */
         Onepop.getWrapper().onUpdateColor();
 
+        if (MODULE_AUTO_CRYSTAL_REWRITE.isEnabled()) {
+            MODULE_AUTO_CRYSTAL_REWRITE.onDirectDraw3D();
+        }
+
         for (Module modules : Onepop.getModuleManager().getModuleList()) {
             if (modules.isEnabled()) {
                 modules.onRender3D();
             }
         }
-
-        // We apply the dock push function here to best smooth!
-        Onepop.getComponentManager().onCornerDetectorComponentList(this.currentRender2DPartialTicks);
     }
 
     @SubscribeEvent()

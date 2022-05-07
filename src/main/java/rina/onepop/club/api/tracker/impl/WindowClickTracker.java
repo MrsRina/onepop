@@ -6,6 +6,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.client.CPacketClickWindow;
 import rina.onepop.club.api.tracker.Tracker;
 
+import java.io.IOException;
+
 /**
  * @author SrRina
  * @since 30/06/2021 at 04:23
@@ -37,7 +39,7 @@ public class WindowClickTracker extends Tracker {
             ItemStack itemstack = player.openContainer.slotClick(slotId, mouseButton, type, player);
 
             this.setPacket(new CPacketClickWindow(windowId, slotId, mouseButton, type, itemstack, short1));
-        } catch (IndexOutOfBoundsException exc) {
+        } catch (IOException exc) {
             flush = false;
         }
     }

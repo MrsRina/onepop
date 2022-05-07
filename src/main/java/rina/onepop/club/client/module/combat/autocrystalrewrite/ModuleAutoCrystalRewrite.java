@@ -8,12 +8,12 @@ import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemEndCrystal;
 import net.minecraft.network.play.client.CPacketAnimation;
 import net.minecraft.network.play.client.CPacketHeldItemChange;
 import net.minecraft.network.play.client.CPacketPlayerTryUseItemOnBlock;
 import net.minecraft.network.play.client.CPacketUseEntity;
-import net.minecraft.network.play.server.SPacketSoundEffect;
-import net.minecraft.network.play.server.SPacketSpawnObject;
+import net.minecraft.network.play.server.*;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
@@ -111,6 +111,8 @@ public class ModuleAutoCrystalRewrite extends Module {
     private float entityDistance;
     private int entityID;
 
+    public int maximumEntity;
+
     public ModuleAutoCrystalRewrite() {
         INSTANCE = this;
 
@@ -171,14 +173,8 @@ public class ModuleAutoCrystalRewrite extends Module {
             RenderUtil.drawOutlineBlock(camera, this.position, settingLineSize.getValue().floatValue(), settingColorPlace.getColor(settingLineAlpha.getValue().intValue()));
         }
 
-        if (settingIncreaseTicks.getValue()) {
-            if ((this.isCrystalInMainHand || this.isCrystalInOffhand) && this.isEntityTargeted(this.entity)) {
-                this.update();
-            }
-        }
-
-        if (settingStrictPriority.getValue() != Priority.OFF) {
-            this.rotations();
+        if (settingIncreaseTicks.getValue() && (this.isCrystalInMainHand || this.isCrystalInOffhand) && this.isEntityTargeted(this.entity)) {
+            this.update();
         }
     }
 
@@ -243,10 +239,12 @@ public class ModuleAutoCrystalRewrite extends Module {
             return;
         }
 
-        if (!settingIncreaseTicks.getValue()) {
-            if ((this.isCrystalInMainHand || this.isCrystalInOffhand) && this.isEntityTargeted(this.entity)) {
-                this.update();
-            }
+        if (settingStrictPriority.getValue() != Priority.OFF) {
+            this.rotations();
+        }
+
+        if (!settingIncreaseTicks.getValue() && (this.isCrystalInMainHand || this.isCrystalInOffhand) && this.isEntityTargeted(this.entity)) {
+            this.update();
         }
     }
 

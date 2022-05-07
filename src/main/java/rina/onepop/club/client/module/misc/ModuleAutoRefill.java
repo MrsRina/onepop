@@ -5,6 +5,7 @@ import net.minecraft.client.gui.GuiChat;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.play.client.CPacketClickWindow;
 import rina.onepop.club.Onepop;
 import rina.onepop.club.api.ISLClass;
 import rina.onepop.club.api.module.Module;
@@ -113,9 +114,9 @@ public class ModuleAutoRefill extends Module {
             return;
         }
 
-        Onepop.getTrackerManager().dispatch(new WindowClickTracker(0, slot, 0, ClickType.PICKUP, ISLClass.mc.player));
-        Onepop.getTrackerManager().dispatch(new WindowClickTracker(0, 36 + slot, 0, ClickType.PICKUP, ISLClass.mc.player));
-        Onepop.getTrackerManager().dispatch(new WindowClickTracker(0, slot, 0, ClickType.PICKUP, ISLClass.mc.player));
+        mc.playerController.windowClick(0, slot, 0, ClickType.PICKUP, ISLClass.mc.player);
+        mc.playerController.windowClick(0, 36 + slot, 0, ClickType.PICKUP, ISLClass.mc.player);
+        mc.playerController.windowClick(0, slot, 0, ClickType.PICKUP, ISLClass.mc.player);
     }
 
     public void blackListFill() {
