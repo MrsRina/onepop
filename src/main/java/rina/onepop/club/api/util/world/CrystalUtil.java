@@ -206,9 +206,7 @@ public class CrystalUtil {
         final Vec3d vec3d = new Vec3d(posX, posY, posZ);
         double blockDensity = 0.0;
 
-        try {
-            blockDensity = entity.world.getBlockDensity(vec3d, entity.getEntityBoundingBox());
-        } catch (Exception ignore) {}
+        blockDensity = entity.world.getBlockDensity(vec3d, entity.getEntityBoundingBox());
 
         final double v = (1.0 - distancedsize) * blockDensity;
         final float damage = (float)(int)((v * v + v) / 2.0 * 7.0 * doubleExplosionSize + 1.0);

@@ -20,6 +20,8 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
+import rina.onepop.club.Onepop;
+import rina.onepop.club.OnepopMod;
 import rina.onepop.club.api.ISLClass;
 import rina.onepop.club.api.module.Module;
 import rina.onepop.club.api.module.impl.ModuleCategory;
@@ -197,7 +199,7 @@ public class ModuleAutoCrystalRewrite extends Module {
             final SPacketSpawnObject packet = (SPacketSpawnObject) event.getPacket();
             final BlockPos pos = new BlockPos(packet.getX(), packet.getY(), packet.getZ()).down();
 
-            if (packet.getType() == 51 && !this.hitCount.contains(packet.getEntityID()) && this.placeCount.contains(pos)) {
+            if (packet.getType() == 51 && this.placeCount.contains(pos)) {
                 final CPacketUseEntity attack = new CPacketUseEntity();
 
                 attack.entityId = packet.getEntityID();
@@ -211,7 +213,9 @@ public class ModuleAutoCrystalRewrite extends Module {
                 this.placeCount.remove(pos);
                 this.placeDelayMS.reset();
             }
-        } else if (event.getPacket() instanceof SPacketSoundEffect && settingNoSoundDelay.getValue()) {
+        }
+
+        if (event.getPacket() instanceof SPacketSoundEffect && settingNoSoundDelay.getValue()) {
             final SPacketSoundEffect packet = (SPacketSoundEffect) event.getPacket();
 
             if (packet.getCategory() == SoundCategory.BLOCKS && packet.getSound() == SoundEvents.ENTITY_GENERIC_EXPLODE) {
@@ -225,10 +229,6 @@ public class ModuleAutoCrystalRewrite extends Module {
                             hitList = true;
                         }
                     }
-                }
-
-                if (hitList) {
-                    this.hitCount.clear();
                 }
             }
         }
@@ -297,7 +297,7 @@ public class ModuleAutoCrystalRewrite extends Module {
     }
 
     protected void update() {
-        if (this.breakDelayMS.isPassedMS(settingBreakDelay.getValue().floatValue())) {
+        if (this.breakDelayMS.isPassedMS(settingBreakDelay.getValue().floatValue()) && !settingPredict.getValue()) {
             this.entityID = this.findCrystalBreak();
 
             if (this.entityID != -1) {
@@ -415,6 +415,10 @@ public class ModuleAutoCrystalRewrite extends Module {
         for (BlockPos places : CrystalUtil.getSphereCrystalPlace(settingPlaceRange.getValue().floatValue(), settingPlace113.getValue(), true)) {
             float entityDamage = CrystalUtil.calculateDamage(places, this.entity);
             float selfDamage = CrystalUtil.calculateDamage(places, mc.player);
+
+            if (this.entity.getDistance(places.x, places.y, places.z) >= 6.0f) {
+                continue;
+            }
 
             if (settingWallCheck.getValue() && mc.player.getDistance(places.x, places.y, places.z) > settingWallRange.getValue().floatValue() && mc.world.rayTraceBlocks(new Vec3d(mc.player.posX, mc.player.posY + (double) mc.player.getEyeHeight(), mc.player.posZ), new Vec3d(places.getX() + 0.5f, places.getY() - settingFacingY.getValue().floatValue(), places.getZ() + 0.5f), false, true, false) != null) {
                 continue;
