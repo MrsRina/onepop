@@ -27,7 +27,7 @@ gradle build
 ```
 
 # credit
-- Client base, modules & ui/gui - ![Rina](https://github.com/SirRina)
+- Client base, modules & ui/gui - ![Rina](https://github.com/MrsRina)
 - Protection sys & obfuscation - ![Doctor-Swag](https://github.com/doctor-swag)
 - Leader of discord server & contributor (origin client creator) - ![Hero](https://github.com/HeroGlaucoP)
 - Main contributor - ![JohnShiozo](https://github.com/JohnShiozo)
