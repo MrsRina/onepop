@@ -69,6 +69,11 @@ public class ModuleAutoCrystalRender extends Module {
         INSTANCE = this;
     }
 
+    @Override
+    public void onEnable() {
+        this.renderList.clear();
+    }
+
     @Listener
     public void onPacketReceive(PacketEvent.Receive event) {
         if (event.getPacket() instanceof SPacketSpawnObject) {

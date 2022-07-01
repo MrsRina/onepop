@@ -212,6 +212,7 @@ public class ModuleAutoCrystalRewrite extends Module {
 
                 this.placeCount.remove(pos);
                 this.placeDelayMS.reset();
+                this.breakDelayMS.reset();
             }
         }
 
@@ -229,6 +230,11 @@ public class ModuleAutoCrystalRewrite extends Module {
                             hitList = true;
                         }
                     }
+                }
+
+                if (hitList) {
+                    this.placeCount.clear();
+                    this.hitCount.clear();
                 }
             }
         }
@@ -297,7 +303,7 @@ public class ModuleAutoCrystalRewrite extends Module {
     }
 
     protected void update() {
-        if (this.breakDelayMS.isPassedMS(settingBreakDelay.getValue().floatValue()) && !settingPredict.getValue()) {
+        if (this.breakDelayMS.isPassedMS(settingBreakDelay.getValue().floatValue())) {
             this.entityID = this.findCrystalBreak();
 
             if (this.entityID != -1) {
@@ -410,23 +416,36 @@ public class ModuleAutoCrystalRewrite extends Module {
             return null;
         }
 
-        BlockPos position = null;
+        final BlockPos selfPos = new BlockPos(mc.player.posX, mc.player.posY, mc.player.posZ);
+        float range = settingPlaceRange.getValue().floatValue();
 
-        for (BlockPos places : CrystalUtil.getSphereCrystalPlace(settingPlaceRange.getValue().floatValue(), settingPlace113.getValue(), true)) {
-            float entityDamage = CrystalUtil.calculateDamage(places, this.entity);
-            float selfDamage = CrystalUtil.calculateDamage(places, mc.player);
+        for (int x = (int) (selfPos.x - range); x <= selfPos.x + range; x++) {
+            for (int z = (int) (selfPos.z - range); z <= selfPos.z + range; z++) {
+                for (int y = (int) (selfPos.y - range); y <= selfPos.y + range; y++) {
+                    double dist = (selfPos.x - x) * (selfPos.x - x) + (selfPos.z - z) * (selfPos.z - z) + (selfPos.y - y) * (selfPos.y - y);
 
-            if (this.entity.getDistance(places.x, places.y, places.z) >= 6.0f) {
-                continue;
-            }
+                    if (dist < range * range) {
+                        BlockPos block = new BlockPos(x, y, z);
 
-            if (settingWallCheck.getValue() && mc.player.getDistance(places.x, places.y, places.z) > settingWallRange.getValue().floatValue() && mc.world.rayTraceBlocks(new Vec3d(mc.player.posX, mc.player.posY + (double) mc.player.getEyeHeight(), mc.player.posZ), new Vec3d(places.getX() + 0.5f, places.getY() - settingFacingY.getValue().floatValue(), places.getZ() + 0.5f), false, true, false) != null) {
-                continue;
-            }
+                        if (CrystalUtil.isCrystalPlaceable(block, settingPlace113.getValue(), true)) {
+                            float entityDamage = CrystalUtil.calculateDamage(block, this.entity);
+                            float selfDamage = CrystalUtil.calculateDamage(block, mc.player);
 
-            if (entityDamage > settingMinimumDamage.getValue().floatValue() && entityDamage > damage && selfDamage < settingSelfDamage.getValue().floatValue()) {
-                damage = entityDamage;
-                position = places;
+                            if (this.entity.getDistance(block.x, block.y, block.z) >= 6.0f) {
+                                continue;
+                            }
+
+                            if (settingWallCheck.getValue() && mc.player.getDistance(block.x, block.y, block.z) > settingWallRange.getValue().floatValue() && mc.world.rayTraceBlocks(new Vec3d(mc.player.posX, mc.player.posY + (double) mc.player.getEyeHeight(), mc.player.posZ), new Vec3d(block.getX() + 0.5f, block.getY() - settingFacingY.getValue().floatValue(), block.getZ() + 0.5f), false, true, false) != null) {
+                                continue;
+                            }
+
+                            if (entityDamage > settingMinimumDamage.getValue().floatValue() && entityDamage > damage && selfDamage < settingSelfDamage.getValue().floatValue()) {
+                                damage = entityDamage;
+                                position = block;
+                            }
+                        }
+                    }
+                }
             }
         }
 
