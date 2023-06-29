@@ -19,8 +19,8 @@ import java.util.UUID;
  * @author SrRina
  * @since 17/04/2021 at 23:49
  **/
-@Registry(name = "Negro Module", tag = "FakePlayer", description = "Negro module, muscle!", category = ModuleCategory.MISC)
-public class ModuleNegro extends Module {
+@Registry(name = "Fakeplayer Module", tag = "FakePlayer", description = "Fakeplayer module, muscle!", category = ModuleCategory.MISC)
+public class ModuleFakeplayer extends Module {
     /* Misc. */
     public static ValueString settingName = new ValueString("Name", "Name", "Customize name from fake player.", "Pedroperry");
 
