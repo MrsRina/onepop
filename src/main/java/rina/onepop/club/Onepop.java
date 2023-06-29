@@ -248,7 +248,7 @@ public class Onepop {
         this.moduleManager.registry(new ModuleTimer());
         this.moduleManager.registry(new ModuleAutoEat());
         this.moduleManager.registry(new ModuleNoEntityTrace());
-        this.moduleManager.registry(new ModuleNegro());
+        this.moduleManager.registry(new ModuleFakeplayer());
         this.moduleManager.registry(new ModuleEntityControl());
         this.moduleManager.registry(new ModuleSearch());
         this.moduleManager.registry(new ModuleBuildHeight());
