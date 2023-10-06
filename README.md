@@ -1,7 +1,7 @@
 # onepop
 Onepop is an utlity client previously paid, but now public and open source, the client license is the GNU General Public License v3.0.
 
-* The client uses ![Imperador](https://github.com/SirRina/Imperador-Widgets) entry box.
+* The client uses ![Imperador](https://github.com/MrsRina/Imperador-Widgets) entry box.
 * Good crystal aura for strict and non strict servers.
 * Good strafe with an insane boost in servers strict and non strict.
 * Visuals with many options to you configure.
