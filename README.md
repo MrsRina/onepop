@@ -29,7 +29,7 @@ gradle build
 # credit
 - Client base, modules & ui/gui - ![Rina](https://github.com/MrsRina)
 - Protection sys & obfuscation - ![Doctor-Swag](https://github.com/doctor-swag)
-- Leader of discord server & contributor (origin client creator) - ![Hero](https://github.com/HeroGlaucoP)
+- Leader of discord server & contributor (origin client bope-based creator) - ![Hero](https://github.com/HeroGlaucoP)
 - Main contributor - ![JohnShiozo](https://github.com/JohnShiozo)
 
  Thank you for who bought the Onepop client, I really can not forget how much it helped me!
