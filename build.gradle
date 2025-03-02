@@ -66,6 +66,7 @@ dependencies {
 	}
 	compile group: 'club.minnced', name: 'java-discord-rpc', version: '2.0.1'
 	compile group: 'net.jodah', name: 'typetools', version: '0.5.0'
+	//compile files('run/custom-mods/a.jar')
 }
 
 processResources {

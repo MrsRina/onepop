@@ -18,6 +18,8 @@ import rina.onepop.club.client.manager.world.HoleManager;
 import java.util.Arrays;
 import java.util.List;
 
+import static rina.onepop.club.client.module.client.anticheat.ModuleAntiCheat.settingNewerVersionAC;
+
 /**
  * @author SrRina
  * @since 08/02/2021 at 14:42
@@ -148,11 +150,16 @@ public class BlockUtil {
         } else {
             EnumFacing facing = null;
             boolean found = false;
+            boolean newerVersion = settingNewerVersionAC.getValue();
 
             for (EnumFacing faces : MASK_FACING_HOLE) {
                 final BlockPos offset = position.offset(faces);
 
                 if ((!isSafeOrUnsafeExcludingEntity(offset, new BlockPos(0, -1, 0)) || !isAir(offset)) && !found) {
+                    continue;
+                }
+
+                if (newerVersion && !isAir(offset.add(0, 1, 0)) && !found) {
                     continue;
                 }
 

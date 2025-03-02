@@ -53,7 +53,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author SrRina
+ * @author mwsrina
  * @since 04/09/2021 at 00:00
  **/
 @Registry(name = "Auto-Crystal Rewrite", tag = "AutoCrystalRewrite", description = "Add crystals on feet of enemy & explode them!", category = ModuleCategory.COMBAT)
@@ -67,14 +67,14 @@ public class ModuleAutoCrystalRewrite extends Module {
     public static ValueBoolean settingNoSoundDelay = new ValueBoolean("No Sound Delay", "NoSoundDelay", "Save 1 tick by explosion in MC.", true);
     public static ValueBoolean settingPlace113 = new ValueBoolean("Place 1.13", "Place113", "New Minecraft placement 1x1x1.", false);
     public static ValueNumber settingHealth = new ValueNumber("Health Switch", "HealthSwitch", "Switch for needed time.", 20, 1, 36);
-    public static ValueBoolean settingPredict = new ValueBoolean("Predict", "Predict", "Normal predication.", true);
-    public static ValueBoolean settingIncreaseTicks = new ValueBoolean("Increase Ticks", "IncreaseTicks", "Increase the ticks on ca.", true);
     public static ValueEnum settingStrictPriority = new ValueEnum("Strict Priority", "StrictPriority", "Priority the strict on server.", Priority.OFF);
 
     /* Crystal. */
     public static ValueNumber settingEntityRange = new ValueNumber("Entity Range", "EntityRage", "Sets range for target.", 13f, 4f, 14f);
     public static ValueBoolean settingWallCheck = new ValueBoolean("Wall Check", "WallCheck", "Enable wall check.", false);
     public static ValueNumber settingWallRange = new ValueNumber("Wall Range", "WallRange", "Prevents blocks in wall.", 4f, 2f, 5f);
+    public static ValueBoolean settingBreakAnimation = new ValueBoolean("Break Animation", "BreakAnimation", "idk mwmw", false);
+    public static ValueNumber settingBreakPriority = new ValueNumber("Break Priority", "BreakPriority", "Break priority for needed time.", 0, 0, 3);
     public static ValueNumber settingBreakRange = new ValueNumber("Break Range", "BreakRange", "Sets break range.", 4f, 2f, 6f);
     public static ValueNumber settingPlaceRange = new ValueNumber("Place Range", "PlaceRange", "Sets place range.", 4f, 2f, 6f);
     public static ValueNumber settingPlaceDelay = new ValueNumber("Place Delay", "PlaceDelay", "Sets place delay.", 33, 0, 50);
@@ -82,6 +82,9 @@ public class ModuleAutoCrystalRewrite extends Module {
     public static ValueNumber settingSelfDamage = new ValueNumber("Self Damage", "SelfDamage", "Self damage.", 9, 1, 36);
     public static ValueNumber settingMinimumDamage = new ValueNumber("Min. Damage", "Min. Damage", "Sets minimum damage.", 4, 0, 36);
     public static ValueNumber settingFacingY = new ValueNumber("Facing Y", "FacingY", "Sets the facing Y from place.", 1f, 0f, 1f);
+    public static ValueBoolean settingPredict = new ValueBoolean("Predict", "Predict", "Normal predication.", true);
+    public static ValueBoolean settingIncreaseTicks = new ValueBoolean("Increase Ticks", "IncreaseTicks", "Increase the ticks on ca.", true);
+    public static ValueBoolean settingOffhandAttack = new ValueBoolean("Attack by Offhand", "AttackByOffhand", "hits by offhand", false);
 
     /* Render. */
     public static ValueColor settingColorPlace = new ValueColor("Place Color", "PlaceColor", "Render the placement.", true, Color.cyan);
@@ -112,6 +115,7 @@ public class ModuleAutoCrystalRewrite extends Module {
 
     private float entityDistance;
     private int entityID;
+    private EnumHand handAttack;
 
     public int maximumEntity;
 
@@ -134,27 +138,32 @@ public class ModuleAutoCrystalRewrite extends Module {
     public void onSetting() {
         settingAutoSwitch.setEnabled(settingTab.getValue() == Tab.MISC);
         settingHealth.setEnabled(settingTab.getValue() == Tab.MISC && settingAutoSwitch.getValue() == Switch.NORMAL);
-        settingIncreaseTicks.setEnabled(settingTab.getValue() == Tab.MISC);
-        settingPredict.setEnabled(settingTab.getValue() == Tab.MISC);
         settingNoSoundDelay.setEnabled(settingTab.getValue() == Tab.MISC);
         settingAntiNaked.setEnabled(settingTab.getValue() == Tab.MISC);
         settingStrictPriority.setEnabled(settingTab.getValue() == Tab.MISC);
         settingPlace113.setEnabled(settingTab.getValue() == Tab.MISC);
 
+        settingIncreaseTicks.setEnabled(settingTab.getValue() == Tab.CRYSTAL);
+        settingPredict.setEnabled(settingTab.getValue() == Tab.CRYSTAL);
         settingEntityRange.setEnabled(settingTab.getValue() == Tab.CRYSTAL);
         settingBreakRange.setEnabled(settingTab.getValue() == Tab.CRYSTAL);
         settingPlaceRange.setEnabled(settingTab.getValue() == Tab.CRYSTAL);
         settingPlaceDelay.setEnabled(settingTab.getValue() == Tab.CRYSTAL);
+        settingBreakPriority.setEnabled(settingTab.getValue() == Tab.CRYSTAL);
+        settingBreakAnimation.setEnabled(settingTab.getValue() == Tab.CRYSTAL);
         settingBreakDelay.setEnabled(settingTab.getValue() == Tab.CRYSTAL);
         settingWallCheck.setEnabled(settingTab.getValue() == Tab.CRYSTAL);
         settingWallRange.setEnabled(settingTab.getValue() == Tab.CRYSTAL && settingWallCheck.getValue());
         settingSelfDamage.setEnabled(settingTab.getValue() == Tab.CRYSTAL);
         settingFacingY.setEnabled(settingTab.getValue() == Tab.CRYSTAL);
         settingMinimumDamage.setEnabled(settingTab.getValue() == Tab.CRYSTAL);
+        settingOffhandAttack.setEnabled(settingTab.getValue() == Tab.CRYSTAL);
 
         settingColorPlace.setEnabled(settingTab.getValue() == Tab.RENDER);
         settingLineAlpha.setEnabled(settingTab.getValue() == Tab.RENDER);
         settingLineSize.setEnabled(settingTab.getValue() == Tab.RENDER);
+
+        this.handAttack = settingOffhandAttack.getValue() ? EnumHand.OFF_HAND : EnumHand.MAIN_HAND;
     }
 
     @Override
@@ -182,15 +191,61 @@ public class ModuleAutoCrystalRewrite extends Module {
 
     @Listener
     public void onPacketSend(PacketEvent.Send event) {
+        int priority = settingBreakPriority.getValue().intValue();
+        if (event.getPacket() instanceof CPacketUseEntity && priority > 0 && priority != 3) {
+            CPacketUseEntity useEntity = (CPacketUseEntity) event.getPacket();
+            useEntity.hand = this.handAttack;
+            if ((useEntity.entityId = this.findCrystal()) == -1) {
+                event.setCanceled(true);
+            } else {
+                this.hitCount.add(useEntity.entityId);
+            }
+        }
+
         if (event.getPacket() instanceof CPacketPlayerTryUseItemOnBlock && settingStrictPriority.getValue() == Priority.HIGH && this.entity != null) {
             final CPacketPlayerTryUseItemOnBlock packet = (CPacketPlayerTryUseItemOnBlock) event.getPacket();
-
             event.setCanceled(!CrystalUtil.isCrystalPlaceable(packet.getPos(), settingPlace113.getValue(), true));
         }
 
         if (settingStrictPriority.getValue() != Priority.OFF && this.entity != null && this.cooldownDelayMS.isPassedMS(500)) {
             StrictUtilityInjector.rotation(event.getPacket(), this.yaw, this.pitch);
         }
+    }
+
+    public void doBreakCrystal(SPacketSpawnObject packet) {
+        CPacketUseEntity attack = new CPacketUseEntity();
+        attack.entityId = packet.getEntityID();
+        attack.action = CPacketUseEntity.Action.ATTACK;
+        attack.hand = this.handAttack;
+
+        BlockPos pos = new BlockPos(packet.getX(), packet.getY(), packet.getZ());
+        boolean mustBreak = false;
+
+        if (!mustBreak) {
+            float damage = 0.5f;
+
+            if (mc.player.getDistance(pos.x, pos.y, pos.z) < settingBreakRange.getValue().floatValue()) {
+                float entityDamage = CrystalUtil.calculateDamage(pos.z, pos.y, pos.z, this.entity);
+                float selfDamage = CrystalUtil.calculateDamage(pos.x, pos.y, pos.z, mc.player);
+
+                if (entityDamage > damage && selfDamage < settingSelfDamage.getValue().floatValue()) {
+                    mustBreak = true;
+                }
+            }
+        }
+
+        if (!mustBreak) {
+            return;
+        }
+
+        mc.player.connection.sendPacket(attack);
+
+        if (settingBreakAnimation.getValue()) {
+            mc.player.connection.sendPacket(new CPacketAnimation(EnumHand.MAIN_HAND));
+        }
+
+        this.hitCount.add(attack.entityId);
+        this.placeCount.remove(pos);
     }
 
     @Listener(priority = ListenerPriority.HIGHEST)
@@ -204,6 +259,7 @@ public class ModuleAutoCrystalRewrite extends Module {
 
                 attack.entityId = packet.getEntityID();
                 attack.action = CPacketUseEntity.Action.ATTACK;
+                attack.hand = this.handAttack;
 
                 mc.player.connection.sendPacket(attack);
                 mc.player.connection.sendPacket(new CPacketAnimation(EnumHand.MAIN_HAND));
@@ -226,7 +282,6 @@ public class ModuleAutoCrystalRewrite extends Module {
                     if (entities instanceof EntityEnderCrystal) {
                         if (entities.getDistance(packet.getX(), packet.getY(), packet.getZ()) <= 6.0f) {
                             entities.setDead();
-
                             hitList = true;
                         }
                     }
@@ -304,17 +359,51 @@ public class ModuleAutoCrystalRewrite extends Module {
 
     protected void update() {
         if (this.breakDelayMS.isPassedMS(settingBreakDelay.getValue().floatValue())) {
-            this.entityID = this.findCrystalBreak();
+            switch (settingBreakPriority.getValue().intValue()) {
+                case 1: {
+                    this.breakPacket.entityId = -1;
+                    this.breakPacket.action = CPacketUseEntity.Action.ATTACK;
+                    this.breakPacket.hand = this.handAttack;
+                    mc.player.connection.sendPacket(this.breakPacket);
+                    this.breakDelayMS.reset();
+                    break;
+                }
+                case 3: {
+                    if (this.breakDelayMS.isPassedMS(settingBreakDelay.getValue().floatValue() * 5)) {
+                        this.entityID = this.findCrystalBreak();
+                        if (this.entityID != -1) {
+                            this.breakPacket.entityId = this.entityID;
+                            this.breakPacket.action = CPacketUseEntity.Action.ATTACK;
+                            this.breakPacket.hand = this.handAttack;
 
-            if (this.entityID != -1) {
-                this.breakPacket.entityId = this.entityID;
-                this.breakPacket.action = CPacketUseEntity.Action.ATTACK;
+                            mc.player.connection.sendPacket(this.breakPacket);
+                            if (settingBreakAnimation.getValue()) {
+                                mc.player.connection.sendPacket(new CPacketAnimation(EnumHand.MAIN_HAND));
+                            }
 
-                mc.player.connection.sendPacket(this.breakPacket);
-                mc.player.connection.sendPacket(new CPacketAnimation(EnumHand.MAIN_HAND));
+                            //this.hitCount.add(this.breakPacket.entityId);
+                            this.breakDelayMS.reset();
+                        }
+                    }
+                    break;
+                }
+                default: {
+                    this.entityID = this.findCrystalBreak();
+                    if (this.entityID != -1) {
+                        this.breakPacket.entityId = this.entityID;
+                        this.breakPacket.action = CPacketUseEntity.Action.ATTACK;
+                        this.breakPacket.hand = this.handAttack;
 
-                this.hitCount.add(this.breakPacket.entityId);
-                this.breakDelayMS.reset();
+                        mc.player.connection.sendPacket(this.breakPacket);
+                        if (settingBreakAnimation.getValue()) {
+                            mc.player.connection.sendPacket(new CPacketAnimation(EnumHand.MAIN_HAND));
+                        }
+
+                        this.hitCount.add(this.breakPacket.entityId);
+                        this.breakDelayMS.reset();
+                    }
+                    break;
+                }
             }
         }
 

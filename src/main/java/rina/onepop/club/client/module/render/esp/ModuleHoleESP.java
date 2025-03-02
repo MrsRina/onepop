@@ -19,14 +19,14 @@ import rina.onepop.club.client.render.type.EnumCube;
 import java.awt.*;
 
 /**
- * @author SrRina
+ * @author mwsrina
  * @since 28/01/2021 at 13:38
  **/
 @Registry(name = "Hole ESP", tag = "HoleESP", description = "Draws holes to help visibility at crystal pvp.", category = ModuleCategory.RENDER)
 public class ModuleHoleESP extends Module {
     // Misc.
-    public static ValueBoolean settingDoubleHole = new ValueBoolean("Double Hole", "DoubleHole", "Verify for double holes.", true);
     public static ValueNumber settingRange = new ValueNumber("Range", "Range", "Maximum distance to render.", 8f, 1f, 13f);
+    public static ValueBoolean settingDoubleHole = new ValueBoolean("Double Hole", "DoubleHole", "Verify for double holes.", true);
 
     public static ValueColor settingSafeSolid = new ValueColor("Safe Solid", "SafeSolid", "Sets safe solid color.", true, Color.GREEN);
     public static ValueColor settingSafeOutline = new ValueColor("Safe Outline", "SafeOutline", "Sets safe outline color.", true, Color.GREEN);

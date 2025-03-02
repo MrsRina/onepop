@@ -11,6 +11,7 @@ import rina.onepop.club.api.ISLClass;
 import rina.onepop.club.api.module.Module;
 import rina.onepop.club.api.module.impl.ModuleCategory;
 import rina.onepop.club.api.module.registry.Registry;
+import rina.onepop.club.api.setting.value.ValueBoolean;
 import rina.onepop.club.api.setting.value.ValueNumber;
 import rina.onepop.club.api.tracker.impl.WindowClickTracker;
 import rina.onepop.club.api.util.client.NullUtil;
@@ -34,6 +35,7 @@ public class ModuleAutoRefill extends Module {
     // Misc.
     public static ValueNumber settingMinimumStackSize = new ValueNumber("Minimum Stack Size", "MinimumStackSize", "Value for refill!", 32, 1, 63);
     public static ValueNumber settingRefillTime = new ValueNumber("Refill Time", "RefillTime", "Reset fill verification.", 100, 50, 250);
+    public static ValueBoolean settingNewerVersion = new ValueBoolean("Newer Version", "NewerVersion", "Set new version of club", false);
 
     private final Set<Integer> blackListFill = new HashSet<>();
 
@@ -114,9 +116,7 @@ public class ModuleAutoRefill extends Module {
             return;
         }
 
-        mc.playerController.windowClick(0, slot, 0, ClickType.PICKUP, ISLClass.mc.player);
-        mc.playerController.windowClick(0, 36 + slot, 0, ClickType.PICKUP, ISLClass.mc.player);
-        mc.playerController.windowClick(0, slot, 0, ClickType.PICKUP, ISLClass.mc.player);
+        mc.playerController.windowClick(0, slot, 0, ClickType.QUICK_MOVE, ISLClass.mc.player);
     }
 
     public void blackListFill() {

@@ -23,6 +23,7 @@ import team.stiff.pomelo.impl.annotated.handler.annotation.Listener;
 public class ModuleReverseStep extends Module {
     /* Misc. */
     public static ValueEnum settingMode = new ValueEnum("Mode", "Mode", "The modes for you fall!", Mode.SMOOTH);
+    public static ValueNumber settingHeight = new ValueNumber("Height", "Height", "The height of falls to get down.", 0, 0, 10);
 
     /* Hole. */
     public static ValueBoolean settingOnlyHole = new ValueBoolean("Only Hole", "OnlyHole", "Step down only if you falling at one hole!", true);
@@ -30,6 +31,7 @@ public class ModuleReverseStep extends Module {
 
     @Override
     public void onSetting() {
+        settingHeight.setEnabled(!settingOnlyHole.getValue());
         settingHoleHeight.setEnabled(settingOnlyHole.getValue());
     }
 
@@ -64,6 +66,13 @@ public class ModuleReverseStep extends Module {
                 this.doFall();
             }
         } else {
+            if (settingHeight.getValue().intValue() > 0) {
+                BlockPos player = PlayerUtil.getBlockPos();
+                if (!BlockUtil.isAir(player.add(0, -(settingHeight.getValue().intValue() + 1), 0))) {
+                    return;
+                }
+            }
+
             this.doFall();
         }
     }
@@ -101,7 +110,7 @@ public class ModuleReverseStep extends Module {
             }
 
             case BYPASS: {
-                mc.player.motionY = -(Integer.MAX_VALUE - Integer.MAX_VALUE - (Integer.MAX_VALUE / 1.2f));
+                //mc.player.motionY = -(Integer.MAX_VALUE - Integer.MAX_VALUE - (Integer.MAX_VALUE / 1.2f));
 
                 break;
             }
