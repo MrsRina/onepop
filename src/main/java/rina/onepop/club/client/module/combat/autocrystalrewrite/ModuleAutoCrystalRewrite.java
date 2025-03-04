@@ -33,6 +33,7 @@ import rina.onepop.club.api.setting.value.ValueNumber;
 import rina.onepop.club.api.social.management.SocialManager;
 import rina.onepop.club.api.social.type.SocialType;
 import rina.onepop.club.api.strict.StrictUtilityInjector;
+import rina.onepop.club.api.util.chat.ChatUtil;
 import rina.onepop.club.api.util.client.NullUtil;
 import rina.onepop.club.api.util.entity.EntityUtil;
 import rina.onepop.club.api.util.item.SlotUtil;
@@ -74,11 +75,12 @@ public class ModuleAutoCrystalRewrite extends Module {
     public static ValueBoolean settingWallCheck = new ValueBoolean("Wall Check", "WallCheck", "Enable wall check.", false);
     public static ValueNumber settingWallRange = new ValueNumber("Wall Range", "WallRange", "Prevents blocks in wall.", 4f, 2f, 5f);
     public static ValueBoolean settingBreakAnimation = new ValueBoolean("Break Animation", "BreakAnimation", "idk mwmw", false);
-    public static ValueNumber settingBreakPriority = new ValueNumber("Break Priority", "BreakPriority", "Break priority for needed time.", 0, 0, 3);
     public static ValueNumber settingBreakRange = new ValueNumber("Break Range", "BreakRange", "Sets break range.", 4f, 2f, 6f);
     public static ValueNumber settingPlaceRange = new ValueNumber("Place Range", "PlaceRange", "Sets place range.", 4f, 2f, 6f);
-    public static ValueNumber settingPlaceDelay = new ValueNumber("Place Delay", "PlaceDelay", "Sets place delay.", 33, 0, 50);
-    public static ValueNumber settingBreakDelay = new ValueNumber("Break Delay", "BreakDelay", "Sets break delay.", 33, 0, 50);
+    public static ValueNumber settingPlaceDelay = new ValueNumber("Place Delay", "PlaceDelay", "Sets place delay.", 33, 0, 500);
+    public static ValueBoolean settingPlaceAnimation = new ValueBoolean("Place Animation", "PlaceAnimation", "sends place animation to server", true);
+    public static ValueNumber settingBreakDelay = new ValueNumber("Break Delay", "BreakDelay", "Sets break delay.", 33, 0, 500);
+    public static ValueNumber settingBreakAsyncDelay = new ValueNumber("Async Break Delay", "AsyncBreakDelay", "Sets break delay.", 33, 0, 500);
     public static ValueNumber settingSelfDamage = new ValueNumber("Self Damage", "SelfDamage", "Self damage.", 9, 1, 36);
     public static ValueNumber settingMinimumDamage = new ValueNumber("Min. Damage", "Min. Damage", "Sets minimum damage.", 4, 0, 36);
     public static ValueNumber settingFacingY = new ValueNumber("Facing Y", "FacingY", "Sets the facing Y from place.", 1f, 0f, 1f);
@@ -96,6 +98,7 @@ public class ModuleAutoCrystalRewrite extends Module {
 
     private final TurokTick rotationDelayMS = new TurokTick();
     private final TurokTick cooldownDelayMS = new TurokTick();
+    private final TurokTick asyncBreakDelayMS = new TurokTick();
     private boolean multiConnection;
 
     private float yaw;
@@ -106,6 +109,7 @@ public class ModuleAutoCrystalRewrite extends Module {
 
     private EntityPlayer entity;
     private BlockPos position;
+    private BlockPos lastPlaceBreakedPos;
 
     private boolean isCrystalInOffhand;
     private boolean isCrystalInMainHand;
@@ -149,8 +153,8 @@ public class ModuleAutoCrystalRewrite extends Module {
         settingBreakRange.setEnabled(settingTab.getValue() == Tab.CRYSTAL);
         settingPlaceRange.setEnabled(settingTab.getValue() == Tab.CRYSTAL);
         settingPlaceDelay.setEnabled(settingTab.getValue() == Tab.CRYSTAL);
-        settingBreakPriority.setEnabled(settingTab.getValue() == Tab.CRYSTAL);
         settingBreakAnimation.setEnabled(settingTab.getValue() == Tab.CRYSTAL);
+        settingBreakAsyncDelay.setEnabled(settingTab.getValue() == Tab.CRYSTAL && settingPredict.getValue());
         settingBreakDelay.setEnabled(settingTab.getValue() == Tab.CRYSTAL);
         settingWallCheck.setEnabled(settingTab.getValue() == Tab.CRYSTAL);
         settingWallRange.setEnabled(settingTab.getValue() == Tab.CRYSTAL && settingWallCheck.getValue());
@@ -191,17 +195,6 @@ public class ModuleAutoCrystalRewrite extends Module {
 
     @Listener
     public void onPacketSend(PacketEvent.Send event) {
-        int priority = settingBreakPriority.getValue().intValue();
-        if (event.getPacket() instanceof CPacketUseEntity && priority > 0 && priority != 3) {
-            CPacketUseEntity useEntity = (CPacketUseEntity) event.getPacket();
-            useEntity.hand = this.handAttack;
-            if ((useEntity.entityId = this.findCrystal()) == -1) {
-                event.setCanceled(true);
-            } else {
-                this.hitCount.add(useEntity.entityId);
-            }
-        }
-
         if (event.getPacket() instanceof CPacketPlayerTryUseItemOnBlock && settingStrictPriority.getValue() == Priority.HIGH && this.entity != null) {
             final CPacketPlayerTryUseItemOnBlock packet = (CPacketPlayerTryUseItemOnBlock) event.getPacket();
             event.setCanceled(!CrystalUtil.isCrystalPlaceable(packet.getPos(), settingPlace113.getValue(), true));
@@ -213,19 +206,24 @@ public class ModuleAutoCrystalRewrite extends Module {
     }
 
     public void doBreakCrystal(SPacketSpawnObject packet) {
+        if (this.entity == null || !this.breakDelayMS.isPassedMS(settingBreakDelay.getValue().intValue())) {
+            return;
+        }
+
         CPacketUseEntity attack = new CPacketUseEntity();
         attack.entityId = packet.getEntityID();
         attack.action = CPacketUseEntity.Action.ATTACK;
         attack.hand = this.handAttack;
 
         BlockPos pos = new BlockPos(packet.getX(), packet.getY(), packet.getZ());
-        boolean mustBreak = false;
+        boolean in = this.placeCount.contains(pos.down());
+        boolean mustBreak = this.placeCount.contains(pos.down());
 
         if (!mustBreak) {
             float damage = 0.5f;
 
             if (mc.player.getDistance(pos.x, pos.y, pos.z) < settingBreakRange.getValue().floatValue()) {
-                float entityDamage = CrystalUtil.calculateDamage(pos.z, pos.y, pos.z, this.entity);
+                float entityDamage = CrystalUtil.calculateDamage(pos.x, pos.y, pos.z, this.entity);
                 float selfDamage = CrystalUtil.calculateDamage(pos.x, pos.y, pos.z, mc.player);
 
                 if (entityDamage > damage && selfDamage < settingSelfDamage.getValue().floatValue()) {
@@ -244,52 +242,20 @@ public class ModuleAutoCrystalRewrite extends Module {
             mc.player.connection.sendPacket(new CPacketAnimation(EnumHand.MAIN_HAND));
         }
 
-        this.hitCount.add(attack.entityId);
-        this.placeCount.remove(pos);
-    }
-
-    @Listener(priority = ListenerPriority.HIGHEST)
-    public void onPacketReceive(PacketEvent.Receive event) {
-        if (event.getPacket() instanceof SPacketSpawnObject && settingPredict.getValue()) {
-            final SPacketSpawnObject packet = (SPacketSpawnObject) event.getPacket();
-            final BlockPos pos = new BlockPos(packet.getX(), packet.getY(), packet.getZ()).down();
-
-            if (packet.getType() == 51 && this.placeCount.contains(pos)) {
-                final CPacketUseEntity attack = new CPacketUseEntity();
-
-                attack.entityId = packet.getEntityID();
-                attack.action = CPacketUseEntity.Action.ATTACK;
-                attack.hand = this.handAttack;
-
-                mc.player.connection.sendPacket(attack);
-                mc.player.connection.sendPacket(new CPacketAnimation(EnumHand.MAIN_HAND));
-
-                this.hitCount.add(packet.getEntityID());
-
-                this.placeCount.remove(pos);
-                this.placeDelayMS.reset();
-                this.breakDelayMS.reset();
-            }
+        if (in) {
+            this.placeCount.remove(pos.down());
         }
 
-        if (event.getPacket() instanceof SPacketSoundEffect && settingNoSoundDelay.getValue()) {
-            final SPacketSoundEffect packet = (SPacketSoundEffect) event.getPacket();
+        this.breakDelayMS.reset();
+    }
 
-            if (packet.getCategory() == SoundCategory.BLOCKS && packet.getSound() == SoundEvents.ENTITY_GENERIC_EXPLODE) {
-                boolean hitList = false;
-
-                for (Entity entities : ISLClass.mc.world.loadedEntityList) {
-                    if (entities instanceof EntityEnderCrystal) {
-                        if (entities.getDistance(packet.getX(), packet.getY(), packet.getZ()) <= 6.0f) {
-                            entities.setDead();
-                            hitList = true;
-                        }
+    public void doCleanCrystals(SPacketSoundEffect packet) {
+        if (packet.getCategory() == SoundCategory.BLOCKS && packet.getSound() == SoundEvents.ENTITY_GENERIC_EXPLODE) {
+            for (Entity entities : ISLClass.mc.world.loadedEntityList) {
+                if (entities instanceof EntityEnderCrystal) {
+                    if (entities.getDistance(packet.getX(), packet.getY(), packet.getZ()) <= 6.0f) {
+                        entities.setDead();
                     }
-                }
-
-                if (hitList) {
-                    this.placeCount.clear();
-                    this.hitCount.clear();
                 }
             }
         }
@@ -306,6 +272,11 @@ public class ModuleAutoCrystalRewrite extends Module {
 
         if (!settingIncreaseTicks.getValue() && (this.isCrystalInMainHand || this.isCrystalInOffhand) && this.isEntityTargeted(this.entity)) {
             this.update();
+        }
+
+        if (this.lastPlaceBreakedPos != null) {
+            this.placeCount.remove(this.lastPlaceBreakedPos);
+            this.lastPlaceBreakedPos = null;
         }
     }
 
@@ -358,52 +329,23 @@ public class ModuleAutoCrystalRewrite extends Module {
     }
 
     protected void update() {
-        if (this.breakDelayMS.isPassedMS(settingBreakDelay.getValue().floatValue())) {
-            switch (settingBreakPriority.getValue().intValue()) {
-                case 1: {
-                    this.breakPacket.entityId = -1;
-                    this.breakPacket.action = CPacketUseEntity.Action.ATTACK;
-                    this.breakPacket.hand = this.handAttack;
-                    mc.player.connection.sendPacket(this.breakPacket);
-                    this.breakDelayMS.reset();
-                    break;
+        boolean predict = settingPredict.getValue();
+        TurokTick breakDelay = predict ? this.asyncBreakDelayMS : this.breakDelayMS;
+        int delay = predict ? settingBreakAsyncDelay.getValue().intValue() : settingBreakDelay.getValue().intValue();
+
+        if (breakDelay.isPassedMS(delay)) {
+            this.entityID = this.findCrystalBreak();
+            if (this.entityID != -1) {
+                this.breakPacket.entityId = this.entityID;
+                this.breakPacket.action = CPacketUseEntity.Action.ATTACK;
+                this.breakPacket.hand = this.handAttack;
+
+                mc.player.connection.sendPacket(this.breakPacket);
+                if (settingBreakAnimation.getValue()) {
+                    mc.player.connection.sendPacket(new CPacketAnimation(EnumHand.MAIN_HAND));
                 }
-                case 3: {
-                    if (this.breakDelayMS.isPassedMS(settingBreakDelay.getValue().floatValue() * 5)) {
-                        this.entityID = this.findCrystalBreak();
-                        if (this.entityID != -1) {
-                            this.breakPacket.entityId = this.entityID;
-                            this.breakPacket.action = CPacketUseEntity.Action.ATTACK;
-                            this.breakPacket.hand = this.handAttack;
 
-                            mc.player.connection.sendPacket(this.breakPacket);
-                            if (settingBreakAnimation.getValue()) {
-                                mc.player.connection.sendPacket(new CPacketAnimation(EnumHand.MAIN_HAND));
-                            }
-
-                            //this.hitCount.add(this.breakPacket.entityId);
-                            this.breakDelayMS.reset();
-                        }
-                    }
-                    break;
-                }
-                default: {
-                    this.entityID = this.findCrystalBreak();
-                    if (this.entityID != -1) {
-                        this.breakPacket.entityId = this.entityID;
-                        this.breakPacket.action = CPacketUseEntity.Action.ATTACK;
-                        this.breakPacket.hand = this.handAttack;
-
-                        mc.player.connection.sendPacket(this.breakPacket);
-                        if (settingBreakAnimation.getValue()) {
-                            mc.player.connection.sendPacket(new CPacketAnimation(EnumHand.MAIN_HAND));
-                        }
-
-                        this.hitCount.add(this.breakPacket.entityId);
-                        this.breakDelayMS.reset();
-                    }
-                    break;
-                }
+                breakDelay.reset();
             }
         }
 
@@ -433,7 +375,10 @@ public class ModuleAutoCrystalRewrite extends Module {
                 this.placePacket.position = this.position;
 
                 mc.player.connection.sendPacket(this.placePacket);
-                mc.player.connection.sendPacket(new CPacketAnimation(this.placePacket.getHand()));
+
+                if (settingPlaceAnimation.getValue()) {
+                    mc.player.connection.sendPacket(new CPacketAnimation(this.placePacket.getHand()));
+                }
 
                 this.placeCount.add(this.position);
                 this.placeDelayMS.reset();
